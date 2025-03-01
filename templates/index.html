@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>PicSpy - Image Search</title>
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3043/3043797.png">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}" />
+    <style>
+        .results-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            max-width: 800px;
+            margin: auto;
+        }
+        .result-card {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .result-info {
+            flex: 1;
+        }
+        .favicon {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+        }
+        .date {
+            font-size: 0.9em;
+            color: gray;
+        }
+        .uploaded-image {
+            max-width: 100%;
+            height: auto;
+            display: block;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Upload an Image for Google Lens Search</h2>
+        <form action="/upload" method="post" enctype="multipart/form-data">
+            <input type="file" name="image" required />
+            <button type="submit">Upload & Search</button>
+        </form>
+
+        {% if image_url %}
+        <h3>Uploaded Image:</h3>
+        <img src="{{ image_url }}" alt="Uploaded Image" class="uploaded-image" />
+
+        <h3>Google Lens Search Results:</h3>
+        <div class="results-container">
+            {% for match in search_results %}
+            <div class="result-card">
+                <div class="result-info">
+                    <h4>{{ match.title }}</h4>
+                    <p>
+                        <a href="{{ match.link }}" target="_blank">Visit Source</a>
+                    </p>
+                    <p class="source">
+                        <img src="https://www.google.com/s2/favicons?domain={{ match.link }}" alt="Source Icon" class="favicon" />
+                        <span>{{ match.source }}</span>
+                    </p>
+                    {% if match.get('uploaded_date') %}
+                    <p class="date">Uploaded on: {{ match.uploaded_date }}</p>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
