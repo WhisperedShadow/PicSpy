@@ -26,7 +26,7 @@ def upload_file():
 
     file = request.files["image"]
     
-    result = cloudinary.uploader.upload(file)
+    result = cloudinary.uploader.upload(file, folder="picspy")
     image_url = result["secure_url"]
 
     params = {
